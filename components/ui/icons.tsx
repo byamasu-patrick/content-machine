@@ -226,6 +226,20 @@ function IconArrowElbow({ className, ...props }: React.ComponentProps<'svg'>) {
   )
 }
 
+function IconArrowUp({ className, ...props }: React.ComponentProps<'svg'>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 32 32"
+      fill="currentColor"
+      className={cn('size-4', className)}
+      {...props}
+    >
+      <path d="M26.71,10.29l-10-10a1,1,0,0,0-1.41,0l-10,10,1.41,1.41L15,3.41V32h2V3.41l8.29,8.29Z" />
+    </svg>
+  )
+}
+
 function IconSpinner({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
     <svg
@@ -502,6 +516,7 @@ export {
   IconClose,
   IconShare,
   IconUsers,
+  IconArrowUp,
   IconExternalLink,
   IconChevronUpDown
 }

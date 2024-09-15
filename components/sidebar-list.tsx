@@ -24,7 +24,7 @@ export async function SidebarList({ userId }: SidebarListProps) {
       <div className="flex flex-1 flex-col overflow-hidden">
         <div className="flex-1 overflow-auto">
           {chats?.length ? (
-            <div className="space-y-2 px-2">
+            <div className="space-y-2 pr-2">
               <SidebarItems chats={chats} />
             </div>
           ) : (

@@ -52,7 +52,6 @@ export default async function SharePage({ params }: SharePageProps) {
           <ChatList messages={uiState} isShared={true} />
         </AI>
       </div>
-      <FooterText className="py-8" />
     </>
   )
 }

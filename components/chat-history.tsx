@@ -13,16 +13,16 @@ interface ChatHistoryProps {
 
 export async function ChatHistory({ userId }: ChatHistoryProps) {
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between p-4">
+    <div className="w-[300px] flex px-4 flex-col h-[calc(100vh_-_theme(spacing.16))]">
+      <div className="flex items-center justify-between my-4">
         <h4 className="text-sm font-medium">Chat History</h4>
       </div>
-      <div className="mb-2 px-2">
+      <div className="mb-2 pr-2">
         <Link
           href="/"
           className={cn(
             buttonVariants({ variant: 'outline' }),
-            'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
+            'h-10 w-full justify-start bg-white px-4 shadow-none transition-colors hover:bg-zinc-50 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
           )}
         >
           <IconPlus className="-translate-x-2 stroke-2" />
@@ -31,7 +31,7 @@ export async function ChatHistory({ userId }: ChatHistoryProps) {
       </div>
       <React.Suspense
         fallback={
-          <div className="flex flex-col flex-1 px-4 space-y-4 overflow-auto">
+          <div className="flex flex-col flex-1 space-y-4 overflow-auto">
             {Array.from({ length: 10 }).map((_, i) => (
               <div
                 key={i}
