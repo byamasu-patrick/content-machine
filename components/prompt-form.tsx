@@ -55,8 +55,6 @@ export function PromptForm({
             display: <UserMessage>{value}</UserMessage>
           }
         ])
-
-        await chatLangflow(value)
         // Submit and get response message
         const responseMessage = await submitUserMessage(value)
         setMessages(currentMessages => [...currentMessages, responseMessage])

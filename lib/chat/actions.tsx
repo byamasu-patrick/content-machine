@@ -4,18 +4,16 @@ import {
   createAI,
   getMutableAIState,
   getAIState,
-  streamUI,
   createStreamableValue
 } from 'ai/rsc'
-import { openai } from '@ai-sdk/openai'
-
 import { BotMessage } from '@/components/stocks'
 
 import { nanoid } from '@/lib/utils'
 import { saveChat } from '@/app/actions'
-import { SpinnerMessage, UserMessage } from '@/components/stocks/message'
+import { UserMessage } from '@/components/stocks/message'
 import { Chat, Message } from '@/lib/types'
 import { auth } from '@/auth'
+import { chatLangflow, StreamData } from '@/utils/langflow'
 
 async function submitUserMessage(content: string) {
   'use server'
@@ -37,50 +35,49 @@ async function submitUserMessage(content: string) {
   let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
   let textNode: undefined | React.ReactNode
 
-  const result = await streamUI({
-    model: openai('gpt-3.5-turbo'),
-    initial: <SpinnerMessage />,
-    system: `\
-    You are a versatile AI assistant designed to help users with various tasks, please answer the users question in a constructive way. 
-    Make sure you are as details as you can.
-    `,
-    messages: [
-      ...aiState.get().messages.map((message: any) => ({
-        role: message.role,
-        content: message.content,
-        name: message.name
-      }))
-    ],
-    text: ({ content, done, delta }) => {
-      if (!textStream) {
-        textStream = createStreamableValue('')
-        textNode = <BotMessage content={textStream.value} />
-      }
-
-      if (done) {
-        textStream.done()
-        aiState.done({
-          ...aiState.get(),
-          messages: [
-            ...aiState.get().messages,
-            {
-              id: nanoid(),
-              role: 'assistant',
-              content
-            }
-          ]
-        })
-      } else {
-        textStream.update(delta)
-      }
-
-      return textNode
+  const updateMessageStream = (data: StreamData) => {
+    if (textStream) {
+      textStream.update(data.chunk)
     }
-  })
+  }
+
+  const closeMessageStream = (message: string) => {
+    if (!textStream) {
+      textStream = createStreamableValue('')
+      textNode = <BotMessage content={textStream.value} />
+    }
+
+    textStream.done()
+    aiState.done({
+      ...aiState.get(),
+      messages: [
+        ...aiState.get().messages,
+        {
+          id: nanoid(),
+          role: 'assistant',
+          content: message
+        }
+      ]
+    })
+  }
+
+  const handleError = (event: Event) => {
+    console.log('An error has occurred please try again', event)
+  }
+
+  const result = await chatLangflow(
+    content,
+    false,
+    updateMessageStream,
+    closeMessageStream,
+    handleError
+  )
+
+  textNode = <BotMessage content={result as string} />
 
   return {
     id: nanoid(),
-    display: result.value
+    display: textNode
   }
 }
 

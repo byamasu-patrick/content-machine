@@ -25,6 +25,7 @@
     "ai": "^3.3.17",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "eventsource": "^2.0.2",
     "framer-motion": "^11.3.30",
     "geist": "^1.3.1",
     "nanoid": "^5.0.7",
@@ -45,6 +46,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.14",
+    "@types/eventsource": "^1.1.15",
     "@types/node": "^22.5.0",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",

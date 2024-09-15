@@ -1,8 +1,42 @@
-export interface Tweaks {
-  [key: string]: object
+import EventSource from 'eventsource'
+interface Input {
+  input_value: string
+}
+
+export interface TextData {
+  text_key: string
+  data: {
+    text: string
+    sender: string
+    sender_name: string
+    session_id: string
+    files: any[]
+    timestamp: string
+    flow_id: string
+  }
+  default_value: string
+  text: string
+}
+
+interface Message {
+  message: TextData
+}
+
+interface Result {
+  results: Message
+}
+
+interface Output {
+  inputs: Input
+  outputs: Result[]
 }
 
 export interface FlowResponse {
+  session_id: string
+  outputs: Output[]
+}
+
+export interface StreamFlowResponse {
   outputs: Array<{
     outputs: Array<{
       artifacts: any
@@ -38,7 +72,8 @@ export class LangflowClient {
   ): Promise<any> {
     let updatedHeaders = {}
     if (this.apiKey) {
-      updatedHeaders = { ...headers, Authorization: `Bearer ${this.apiKey}` }
+      updatedHeaders = { ...headers }
+      // , Authorization: `Bearer ${this.apiKey}` }
     } else {
       updatedHeaders = headers
     }
@@ -57,7 +92,8 @@ export class LangflowClient {
           `${response.status} ${response.statusText} - ${JSON.stringify(responseMessage)}`
         )
       }
-      return responseMessage
+
+      return responseMessage as FlowResponse
     } catch (error: any) {
       console.error(`Error during POST request: ${error.message}`)
       throw error
@@ -68,7 +104,7 @@ export class LangflowClient {
     flowId: string,
     inputValue: string,
     stream: boolean = false
-  ): Promise<FlowResponse> {
+  ): Promise<FlowResponse | StreamFlowResponse> {
     const endpoint = `/api/v1/run/${flowId}?stream=${stream}`
     return this.post(endpoint, {
       input_value: inputValue
@@ -85,6 +121,7 @@ export class LangflowClient {
 
     eventSource.onmessage = event => {
       const data: StreamData = JSON.parse(event.data)
+      console.log('Streamed data: ', data)
       onUpdate(data)
     }
 
@@ -109,24 +146,25 @@ export class LangflowClient {
     onUpdate: (data: StreamData) => void,
     onClose: (message: string) => void,
     onError: (error: Event | any) => void
-  ): Promise<FlowResponse | undefined> {
+  ): Promise<FlowResponse | StreamFlowResponse | undefined> {
     try {
       const initResponse = await this.initiateSession(
         flowIdOrName,
         inputValue,
         stream
       )
-      if (
-        stream &&
-        initResponse?.outputs?.[0]?.outputs?.[0]?.artifacts?.stream_url
-      ) {
-        const streamUrl = (
-          initResponse.outputs[0]?.outputs[0]?.artifacts as {
-            stream_url?: string | undefined
-          }
-        ).stream_url as string
-        console.log(`Streaming from: ${streamUrl}`)
-        this.handleStream(streamUrl, onUpdate, onClose, onError)
+      if (stream) {
+        const streamedResponse = initResponse as StreamFlowResponse
+
+        if (
+          streamedResponse?.outputs?.[0]?.outputs?.[0]?.artifacts?.stream_url
+        ) {
+          const streamUrl =
+            streamedResponse.outputs[0]?.outputs[0]?.artifacts?.stream_url
+
+          console.log(`Streaming from: ${streamUrl}`)
+          this.handleStream(streamUrl, onUpdate, onClose, onError)
+        }
       }
       return initResponse
     } catch (error) {
@@ -137,7 +175,10 @@ export class LangflowClient {
 
 export async function chatLangflow(
   inputValue: string,
-  stream: boolean = false
+  stream: boolean = false,
+  onUpdate: (data: StreamData) => void,
+  onClose: (message: string) => void,
+  onError: (error: Event | any) => void
 ) {
   const flowIdOrName = process.env.NEXT_PUBLIC_LANGFLOW_ID as string
   const langflowClient = new LangflowClient(
@@ -146,22 +187,24 @@ export async function chatLangflow(
   )
 
   try {
-    const response = await langflowClient.runFlow(
+    const response = (await langflowClient.runFlow(
       flowIdOrName,
       inputValue,
       stream,
-      data => console.log('Received:', data.chunk),
-      message => console.log('Stream Closed:', message),
-      error => console.error('Stream Error:', error)
-    )
+      onUpdate,
+      onClose,
+      onError
+    )) as FlowResponse
 
     if (!stream && response) {
       const flowOutputs = response.outputs[0]
       const firstComponentOutputs = flowOutputs.outputs[0]
-      const output = firstComponentOutputs.outputs.message
+      const output = firstComponentOutputs.results.message.text
 
       if (output) {
-        console.log('Final Output:', output.text)
+        console.log('Final Output:', output)
+
+        return output
       }
     }
   } catch (error: any) {
