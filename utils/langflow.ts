@@ -202,10 +202,11 @@ export async function chatLangflow(
       sender_name: senderName,
       session_id: sessionId,
       should_store_message: true
+    },
+    "TextInput-36cHK": {
+      "input_value": sessionId
     }
   }
-
-  console.log(tweaks)
 
   try {
     const response = (await langflowClient.runFlow(

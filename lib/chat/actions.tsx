@@ -6,11 +6,11 @@ import {
   getAIState,
   createStreamableValue
 } from 'ai/rsc'
-import { BotMessage } from '@/components/stocks'
+import { BotMessage } from '@/components/bot'
 
 import { nanoid } from '@/lib/utils'
 import { saveChat } from '@/app/actions'
-import { UserMessage } from '@/components/stocks/message'
+import { UserMessage } from '@/components/bot/message'
 import { Chat, Message } from '@/lib/types'
 import { auth } from '@/auth'
 import { chatLangflow, StreamData } from '@/utils/langflow'
