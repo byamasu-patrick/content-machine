@@ -55,6 +55,11 @@ export interface StreamFlowResponse {
 export interface StreamData {
   chunk: string
 }
+// const tweaks = {
+//   'ChatInput-AzzZf': {
+//     input_value: ''
+//   }
+// }
 
 export class LangflowClient {
   baseURL: string
@@ -106,8 +111,13 @@ export class LangflowClient {
     stream: boolean = false
   ): Promise<FlowResponse | StreamFlowResponse> {
     const endpoint = `/api/v1/run/${flowId}?stream=${stream}`
+
+    // tweaks['ChatInput-AzzZf']['input_value'] = inputValue
+
     return this.post(endpoint, {
-      input_value: inputValue
+      input_value: inputValue,
+      output_type: 'chat',
+      input_type: 'chat'
     })
   }
 
