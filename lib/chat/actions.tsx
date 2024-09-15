@@ -68,17 +68,34 @@ async function submitUserMessage(content: string) {
     console.log('An error has occurred please try again', event)
   }
 
+  const stream = false
+
   const result = await chatLangflow(
     content,
     session?.user.email as string,
     session?.user?.id as string,
-    false,
+    stream,
     updateMessageStream,
     closeMessageStream,
     handleError
   )
 
-  textNode = <BotMessage content={result as string} />
+  if (!textStream && !stream) {
+    textStream = createStreamableValue(result)
+    textNode = <BotMessage content={result as string} />
+    textStream.done()
+    aiState.done({
+      ...aiState.get(),
+      messages: [
+        ...aiState.get().messages,
+        {
+          id: nanoid(),
+          role: 'assistant',
+          content: result as string
+        }
+      ]
+    })
+  }
 
   return {
     id: nanoid(),
