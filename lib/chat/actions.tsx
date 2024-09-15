@@ -14,9 +14,12 @@ import { UserMessage } from '@/components/stocks/message'
 import { Chat, Message } from '@/lib/types'
 import { auth } from '@/auth'
 import { chatLangflow, StreamData } from '@/utils/langflow'
+import { Session } from '@/lib/types'
 
 async function submitUserMessage(content: string) {
   'use server'
+
+  const session = (await auth()) as Session
 
   const aiState = getMutableAIState<typeof AI>()
 
@@ -67,6 +70,8 @@ async function submitUserMessage(content: string) {
 
   const result = await chatLangflow(
     content,
+    session?.user.email as string,
+    session?.user?.id as string,
     false,
     updateMessageStream,
     closeMessageStream,

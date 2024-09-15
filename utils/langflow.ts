@@ -55,11 +55,6 @@ export interface StreamFlowResponse {
 export interface StreamData {
   chunk: string
 }
-// const tweaks = {
-//   'ChatInput-AzzZf': {
-//     input_value: ''
-//   }
-// }
 
 export class LangflowClient {
   baseURL: string
@@ -108,6 +103,7 @@ export class LangflowClient {
   async initiateSession(
     flowId: string,
     inputValue: string,
+    tweaks: {},
     stream: boolean = false
   ): Promise<FlowResponse | StreamFlowResponse> {
     const endpoint = `/api/v1/run/${flowId}?stream=${stream}`
@@ -117,7 +113,8 @@ export class LangflowClient {
     return this.post(endpoint, {
       input_value: inputValue,
       output_type: 'chat',
-      input_type: 'chat'
+      input_type: 'chat',
+      tweaks
     })
   }
 
@@ -152,6 +149,7 @@ export class LangflowClient {
   async runFlow(
     flowIdOrName: string,
     inputValue: string,
+    tweaks: {},
     stream: boolean = false,
     onUpdate: (data: StreamData) => void,
     onClose: (message: string) => void,
@@ -161,6 +159,7 @@ export class LangflowClient {
       const initResponse = await this.initiateSession(
         flowIdOrName,
         inputValue,
+        tweaks,
         stream
       )
       if (stream) {
@@ -185,6 +184,8 @@ export class LangflowClient {
 
 export async function chatLangflow(
   inputValue: string,
+  senderName: string,
+  sessionId: string,
   stream: boolean = false,
   onUpdate: (data: StreamData) => void,
   onClose: (message: string) => void,
@@ -196,10 +197,21 @@ export async function chatLangflow(
     process.env.NEXT_PUBLIC_LANGFLOW_API_KEY as string
   )
 
+  const tweaks = {
+    'ChatInput-AzzZf': {
+      sender_name: senderName,
+      session_id: sessionId,
+      should_store_message: true
+    }
+  }
+
+  console.log(tweaks)
+
   try {
     const response = (await langflowClient.runFlow(
       flowIdOrName,
       inputValue,
+      tweaks,
       stream,
       onUpdate,
       onClose,
