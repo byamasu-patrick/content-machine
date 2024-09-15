@@ -12,7 +12,7 @@ import { IconArrowUp } from '@/components/ui/icons'
 import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip'
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { nanoid } from 'nanoid'
-import { useRouter } from 'next/navigation'
+import { chatLangflow } from '@/utils/langflow'
 
 export function PromptForm({
   input,
@@ -56,6 +56,7 @@ export function PromptForm({
           }
         ])
 
+        await chatLangflow(value)
         // Submit and get response message
         const responseMessage = await submitUserMessage(value)
         setMessages(currentMessages => [...currentMessages, responseMessage])

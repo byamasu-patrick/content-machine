@@ -1,8 +1,8 @@
-interface Tweaks {
+export interface Tweaks {
   [key: string]: object
 }
 
-interface FlowResponse {
+export interface FlowResponse {
   outputs: Array<{
     outputs: Array<{
       artifacts: any
@@ -18,11 +18,11 @@ interface FlowResponse {
   }>
 }
 
-interface StreamData {
+export interface StreamData {
   chunk: string
 }
 
-class LangflowClient {
+export class LangflowClient {
   baseURL: string
   apiKey: string
 
@@ -67,17 +67,11 @@ class LangflowClient {
   async initiateSession(
     flowId: string,
     inputValue: string,
-    inputType: string = 'chat',
-    outputType: string = 'chat',
-    stream: boolean = false,
-    tweaks: Tweaks = {}
+    stream: boolean = false
   ): Promise<FlowResponse> {
     const endpoint = `/api/v1/run/${flowId}?stream=${stream}`
     return this.post(endpoint, {
-      input_value: inputValue,
-      input_type: inputType,
-      output_type: outputType,
-      tweaks
+      input_value: inputValue
     })
   }
 
@@ -111,9 +105,6 @@ class LangflowClient {
   async runFlow(
     flowIdOrName: string,
     inputValue: string,
-    inputType: string = 'chat',
-    outputType: string = 'chat',
-    tweaks: Tweaks,
     stream: boolean = false,
     onUpdate: (data: StreamData) => void,
     onClose: (message: string) => void,
@@ -123,10 +114,7 @@ class LangflowClient {
       const initResponse = await this.initiateSession(
         flowIdOrName,
         inputValue,
-        inputType,
-        outputType,
-        stream,
-        tweaks
+        stream
       )
       if (
         stream &&
@@ -147,41 +135,20 @@ class LangflowClient {
   }
 }
 
-async function main(
+export async function chatLangflow(
   inputValue: string,
-  inputType: string = 'chat',
-  outputType: string = 'chat',
   stream: boolean = false
 ) {
-  const flowIdOrName = 'c6029c1c-2aa2-47a6-b015-73158f8b6635'
+  const flowIdOrName = process.env.NEXT_PUBLIC_LANGFLOW_ID as string
   const langflowClient = new LangflowClient(
-    'http://127.0.0.1:7860',
+    process.env.NEXT_PUBLIC_LANGFLOW_BACKEND as string,
     process.env.NEXT_PUBLIC_LANGFLOW_API_KEY as string
   )
-  const tweaks: Tweaks = {
-    'ChatOutput-C2p49': {},
-    'ChatInput-AzzZf': {},
-    'OpenAIModel-VKzUE': {},
-    'Prompt-KqjZ0': {},
-    'Memory-d2JGj': {},
-    'TextInput-j8u0N': {},
-    'OpenAIEmbeddings-hbpEE': {},
-    'File-axaog': {},
-    'SplitText-fXZef': {},
-    'TextInput-lyqcv': {},
-    'Chroma-XkIRG': {},
-    'ParseData-5CP22': {},
-    'Chroma-mamgO': {},
-    'OpenAIEmbeddings-c5pxe': {}
-  }
 
   try {
     const response = await langflowClient.runFlow(
       flowIdOrName,
       inputValue,
-      inputType,
-      outputType,
-      tweaks,
       stream,
       data => console.log('Received:', data.chunk),
       message => console.log('Stream Closed:', message),
@@ -201,6 +168,3 @@ async function main(
     console.error('Main Error:', error.message)
   }
 }
-
-const args = process.argv.slice(2)
-main(args[0], args[1], args[2], args[3] === 'true')
