@@ -205,8 +205,13 @@ export async function chatLangflow(
     },
     "TextInput-36cHK": {
       "input_value": sessionId
+    },
+    
+    "TextInput-OL4O3": {
+      "input_value": senderName
     }
-  }
+    
+    }
 
   try {
     const response = (await langflowClient.runFlow(
