@@ -27,9 +27,10 @@ export default function SignupForm() {
   return (
     <form
       action={dispatch}
-      className="flex flex-col items-center gap-4 space-y-3"
+      className="flex flex-col h-screen justify-center items-center gap-4 space-y-3"
     >
-      <div className="w-full flex-1 bg-white px-6 pb-4 pt-8 md:w-96 dark:bg-zinc-950">
+      
+      <div className="w-full bg-white px-6 pb-4 pt-8 md:w-96 dark:bg-zinc-950">
         <h1 className="mb-3 text-2xl font-bold">Sign up for an account!</h1>
         <div className="w-full">
           <div>

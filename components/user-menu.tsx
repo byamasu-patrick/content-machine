@@ -22,7 +22,7 @@ function getUserInitials(name: string) {
 export function UserMenu({ user }: UserMenuProps) {
   const handleSignOut = async () => {
     const response = await fetch('/api/signout', {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
@@ -31,6 +31,7 @@ export function UserMenu({ user }: UserMenuProps) {
     if (response.ok) {
       router.push('/login')
     } else {
+      console.log(response)
       console.error('Error signing out')
     }
   }
@@ -53,7 +54,7 @@ export function UserMenu({ user }: UserMenuProps) {
           <DropdownMenuSeparator />
           <button
             onClick={handleSignOut}
-            className=" relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-red-500 hover:text-white focus:bg-accent focus:text-accent-foreground"
+            className=" relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-zinc-800 hover:text-white focus:bg-accent focus:text-accent-foreground"
           >
             Sign Out
           </button>

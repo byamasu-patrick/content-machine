@@ -33,37 +33,35 @@ export function ChatPanel({
   const [messages, setMessages] = useUIState<typeof AI>()
   const { submitUserMessage } = useActions()
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
-
   const exampleMessages = [
     {
-      heading: 'What are the',
-      subheading: 'trending memecoins today?',
-      message: `What are the trending memecoins today?`
+      heading: 'Can you write a comparison article on',
+      subheading: 'the top free AI text-to-image generators?',
+      message:
+        'Can you write a comparison article on the top free AI text-to-image generators like Leonardo AI, Blue Willow, Playground AI, and Dreamlike Art, highlighting their key features and usage benefits?'
     },
     {
-      heading: 'What is the price of',
-      subheading: '$DOGE right now?',
-      message: 'What is the price of $DOGE right now?'
+      heading: 'What are the unique advantages of',
+      subheading: 'Google’s Imagen 3 AI image generator?',
+      message:
+        'What are the unique advantages of Google’s Imagen 3 AI image generator over other tools in terms of prompt adherence, realism, and text generation, as mentioned in the review?'
     },
     {
-      heading: 'I would like to buy',
-      subheading: '42 $DOGE',
-      message: `I would like to buy 42 $DOGE`
+      heading: 'Could you create an in-depth review of',
+      subheading: 'the best hidden AI tools?',
+      message:
+        'Could you create an in-depth review of the best hidden AI tools, such as Napkin AI and IDM VTON, discussing their unique use cases and potential impact on productivity?'
     },
     {
-      heading: 'What are some',
-      subheading: `recent events about $DOGE?`,
-      message: `What are some recent events about $DOGE?`
+      heading: 'How does Grok 2 Mini compare to',
+      subheading: 'other large language models like GPT-4 Turbo?',
+      message:
+        'How does Grok 2 Mini compare to other large language models, like GPT-4 Turbo and Claude 3.5, in terms of performance, prompt handling, and image generation capabilities?'
     }
   ]
 
   return (
     <div className="w-full">
-      <ButtonScrollToBottom
-        isAtBottom={isAtBottom}
-        scrollToBottom={scrollToBottom}
-      />
-
       <div className="flex justify-center mx-auto sm:max-w-2xl sm:px-4">
         <div className="mb-4 grid grid-cols-2 gap-2 px-4 sm:px-0">
           {messages.length === 0 &&
@@ -133,6 +131,11 @@ export function ChatPanel({
           <PromptForm input={input} setInput={setInput} />
         </div>
       </div>
+
+      <ButtonScrollToBottom
+        isAtBottom={isAtBottom}
+        scrollToBottom={scrollToBottom}
+      />
     </div>
   )
 }

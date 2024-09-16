@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This project is a prototype of an AI-driven Content Machine that automates content creation based on a dataset of social media posts and scripts. It uses **Retrieval-Augmented Generation (RAG)** for querying and generating content.
+This project is a prototype of an XnEngine AI-driven Content Machine that automates content creation based on a dataset of social media posts and scripts. It uses **Retrieval-Augmented Generation (RAG)** for querying and generating content.
 
 The system consists of two components:
 

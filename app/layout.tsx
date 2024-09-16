@@ -5,17 +5,17 @@ import '@/app/globals.css'
 import { cn } from '@/lib/utils'
 import { Providers } from '@/components/providers'
 import { Toaster } from '@/components/ui/sonner'
-// import { Header } from '@/components/header'
 
 export const metadata = {
   metadataBase: process.env.VERCEL_URL
     ? new URL(`https://${process.env.VERCEL_URL}`)
     : undefined,
   title: {
-    default: 'Next.js AI Chatbot',
-    template: `%s - Next.js AI Chatbot`
+    default: 'XnEngine Content Machine',
+    template: `XnEngine AI-driven Content Machine `
   },
-  description: 'An AI-powered chatbot template built with Next.js and Vercel.',
+  description:
+    'This project is a prototype of an XnEngine AI-driven Content Machine that automates content creation based on a dataset of social media posts and scripts.',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
@@ -52,10 +52,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
           disableTransitionOnChange
         >
           <div className="flex flex-col min-h-screen">
-            {/* <Header /> */}
             <main className="flex flex-col flex-1">{children}</main>
           </div>
-          {/* <TailwindIndicator /> */}
         </Providers>
       </body>
     </html>

@@ -203,15 +203,15 @@ export async function chatLangflow(
       session_id: sessionId,
       should_store_message: true
     },
-    "TextInput-36cHK": {
-      "input_value": sessionId
+    'TextInput-36cHK': {
+      input_value: sessionId
     },
-    
-    "TextInput-OL4O3": {
-      "input_value": senderName
-    }
-    
-    }
+    'TextInput-OL4O3': {
+      input_value: senderName
+    },
+
+    'Memory-d2JGj': {}
+  }
 
   try {
     const response = (await langflowClient.runFlow(

@@ -7,9 +7,15 @@ import { SidebarMobile } from './sidebar-mobile'
 import { ChatHistory } from './chat-history'
 import { Session } from '@/lib/types'
 import Account from './account'
+import { redirect } from 'next/navigation'
 
 async function UserOrLogin() {
   const session = (await auth()) as Session
+
+  if (!session) {
+    redirect('/login')
+  }
+
   return (
     <>
       {session?.user ? (
@@ -34,7 +40,7 @@ async function UserOrLogin() {
 
 export function Header() {
   return (
-    <header className="flex items-center justify-between duration-300 px-4 ease-in-out w-full h-16 data-[state=open]:w-[60px]">
+    <header className="flex items-center justify-between duration-300 px-4 ease-in-out h-16 w-[300px]">
       <div className="flex items-center">
         <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
           <UserOrLogin />
@@ -42,12 +48,4 @@ export function Header() {
       </div>
     </header>
   )
-}
-
-{
-  /* (
-                <Button variant="link" asChild className="-ml-2">
-                <Link href="/login">Login</Link>
-                </Button>
-            ) */
 }
