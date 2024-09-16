@@ -7,13 +7,31 @@ import { Button } from '@/components/ui/button'
 import { IconSidebar } from '@/components/ui/icons'
 
 export function SidebarToggle() {
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, isSidebarOpen } = useSidebar()
 
   return (
     <Button
       variant="ghost"
       className="hidden size-9 p-0 lg:flex"
       onClick={() => {
+        const sidebar = document.getElementById('sidebar')
+        const sidebarHeader = document.getElementById('sidebar-header')
+
+        if (sidebar) {
+          const currentState = sidebar.getAttribute('data-state')
+          const newState = currentState === 'open' ? 'closed' : 'open'
+
+          // Toggle data-state attribute
+          sidebar.setAttribute('data-state', newState)
+          sidebarHeader?.setAttribute('data-state', newState)
+
+          if (newState === 'closed') {
+            sidebar.classList.add('bg-slate-50')
+          } else {
+            sidebar.classList.remove('bg-slate-50')
+          }
+        }
+
         toggleSidebar()
       }}
     >

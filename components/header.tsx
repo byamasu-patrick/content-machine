@@ -40,8 +40,12 @@ async function UserOrLogin() {
 
 export function Header() {
   return (
-    <header className="flex items-center justify-between duration-300 px-4 ease-in-out h-16 w-[300px]">
-      <div className="flex items-center">
+    <header
+      data-state="closed"
+      id="sidebar-header"
+      className="flex items-center justify-between duration-300 px-4 ease-in-out h-16  data-[state=open]:w-[60px] data-[state=closed]:w-[300px]"
+    >
+      <div className="flex items-center w-full">
         <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
           <UserOrLogin />
         </React.Suspense>
