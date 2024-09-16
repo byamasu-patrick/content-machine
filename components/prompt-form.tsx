@@ -113,7 +113,7 @@ export function PromptForm({
           />
           <small>
             Use{' '}
-            <span className="text-xs rounded-sm bg-gray-100 p-1">
+            <span className="text-xs rounded-sm bg-slate-100 p-1">
               shift + return
             </span>{' '}
             for new line

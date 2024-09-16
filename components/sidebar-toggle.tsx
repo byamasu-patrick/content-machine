@@ -12,7 +12,7 @@ export function SidebarToggle() {
   return (
     <Button
       variant="ghost"
-      className="hidden size-9 p-0 lg:flex"
+      className="hidden size-9 p-0 lg:flex hover:bg-slate-100"
       onClick={() => {
         const sidebar = document.getElementById('sidebar')
         const sidebarHeader = document.getElementById('sidebar-header')
