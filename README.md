@@ -1,4 +1,4 @@
-# AI Content Machine - Next.js 14 Project (RAG-Based Solution)
+# XnEngine Content Machine - Next.js 14 Project (RAG-Based Solution)
 
 ## Project Overview
 
@@ -21,8 +21,8 @@ The system consists of two components:
 ### 1. **Clone the Repository**
 
 ```bash
-git clone https://github.com/your-repo-name/ai-content-machine-rag.git
-cd ai-content-machine-rag
+git clone git@github.com:byamasu-patrick/xngen-content-machine.git
+cd xngen-content-machine
 ```
 
 ### 2. **Install Dependencies**
