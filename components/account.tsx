@@ -2,15 +2,21 @@
 
 import { Session } from '@/lib/types'
 import { SidebarToggle } from './sidebar-toggle'
-import { UserMenu } from './user-menu'
 import { useSidebar } from '@/lib/hooks/use-sidebar'
+import { ReactNode } from 'react'
 
-const Account = ({ session }: { session: Session }) => {
+const Account = ({
+  session,
+  component
+}: {
+  session: Session
+  component: ReactNode
+}) => {
   const { isSidebarOpen } = useSidebar()
 
   return (
     <div className="flex w-full items-center justify-between">
-      {session?.user && isSidebarOpen && <UserMenu user={session.user} />}
+      {session?.user && isSidebarOpen && <>{component}</>}
 
       <SidebarToggle />
     </div>

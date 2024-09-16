@@ -8,6 +8,7 @@ import { ChatHistory } from './chat-history'
 import { Session } from '@/lib/types'
 import Account from './account'
 import { redirect } from 'next/navigation'
+import { UserMenu } from './user-menu'
 
 async function UserOrLogin() {
   const session = (await auth()) as Session
@@ -32,7 +33,10 @@ async function UserOrLogin() {
       )}
 
       <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
-        <Account session={session} />
+        <Account
+          session={session}
+          component={<UserMenu user={session.user} />}
+        />
       </React.Suspense>
     </>
   )

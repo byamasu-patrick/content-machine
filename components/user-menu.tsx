@@ -8,7 +8,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import router from 'next/router'
+import { signOut } from '@/auth'
+import { redirect } from 'next/navigation'
 
 export interface UserMenuProps {
   user: Session['user']
@@ -20,22 +21,6 @@ function getUserInitials(name: string) {
 }
 
 export function UserMenu({ user }: UserMenuProps) {
-  const handleSignOut = async () => {
-    const response = await fetch('/api/signout', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-
-    if (response.ok) {
-      router.push('/login')
-    } else {
-      console.log(response)
-      console.error('Error signing out')
-    }
-  }
-
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>
@@ -52,12 +37,17 @@ export function UserMenu({ user }: UserMenuProps) {
             <div className="text-xs text-zinc-500">{user.email}</div>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <button
-            onClick={handleSignOut}
-            className=" relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-zinc-800 hover:text-white focus:bg-accent focus:text-accent-foreground"
+          <form
+            action={async () => {
+              'use server'
+              await signOut()
+              redirect('/login')
+            }}
           >
-            Sign Out
-          </button>
+            <button className=" relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-zinc-800 hover:text-white focus:bg-accent focus:text-accent-foreground">
+              Sign Out
+            </button>
+          </form>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

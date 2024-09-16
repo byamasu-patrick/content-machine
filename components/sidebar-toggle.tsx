@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { IconSidebar } from '@/components/ui/icons'
 
 export function SidebarToggle() {
-  const { toggleSidebar, isSidebarOpen } = useSidebar()
+  const { toggleSidebar } = useSidebar()
 
   return (
     <Button
