@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { signOut } from '@/auth'
+import router from 'next/router'
 
 export interface UserMenuProps {
   user: Session['user']
@@ -20,6 +20,21 @@ function getUserInitials(name: string) {
 }
 
 export function UserMenu({ user }: UserMenuProps) {
+  const handleSignOut = async () => {
+    const response = await fetch('/api/signout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (response.ok) {
+      router.push('/login')
+    } else {
+      console.error('Error signing out')
+    }
+  }
+
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>
@@ -36,16 +51,12 @@ export function UserMenu({ user }: UserMenuProps) {
             <div className="text-xs text-zinc-500">{user.email}</div>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <form
-            action={async () => {
-              // 'use server'
-              await signOut()
-            }}
+          <button
+            onClick={handleSignOut}
+            className=" relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-red-500 hover:text-white focus:bg-accent focus:text-accent-foreground"
           >
-            <button className=" relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-red-500 hover:text-white focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-              Sign Out
-            </button>
-          </form>
+            Sign Out
+          </button>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
