@@ -12,7 +12,7 @@ import { IconArrowUp } from '@/components/ui/icons'
 import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip'
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { nanoid } from 'nanoid'
-import { chatLangflow } from '@/utils/langflow'
+import FileUploader from './ui/file-uploader'
 
 export function PromptForm({
   input,
@@ -31,6 +31,19 @@ export function PromptForm({
       inputRef.current.focus()
     }
   }, [])
+
+  const handleUploadFile = async (file: File) => {
+    try {
+      if (file.type.startsWith('image/')) {
+        // return await handleUploadImageFile(file);
+        console.log('Uploaded the file')
+      }
+      // props.onFileUpload?.(file);
+    } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      // props.onFileError?.(error.message);
+    }
+  }
 
   return (
     <form
@@ -60,35 +73,51 @@ export function PromptForm({
         setMessages(currentMessages => [...currentMessages, responseMessage])
       }}
     >
-      <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-white px-2 sm:rounded-md mb-4 p-4 sm:border">
-        <Textarea
-          ref={inputRef}
-          tabIndex={0}
-          onKeyDown={onKeyDown}
-          placeholder="Send a message."
-          className="min-h-[60px] w-full resize-none bg-white px-2 focus-within:outline-none sm:text-sm"
-          autoFocus
-          spellCheck={false}
-          autoComplete="off"
-          autoCorrect="off"
-          name="message"
-          rows={1}
-          value={input}
-          onChange={e => setInput(e.target.value)}
-        />
-        <div className="absolute right-0 sm:right-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                type="submit"
-                size="icon"
-                disabled={input === ''}
-                className="flex justify-center items-center rounded-3xl"
-              >
-                <IconArrowUp />
-              </Button>
-            </TooltipTrigger>
-          </Tooltip>
+      <div className="bg-white sm:rounded-md mb-4 p-4 sm:border">
+        <div className="flex max-h-60 w-full grow overflow-hidden">
+          <Textarea
+            ref={inputRef}
+            tabIndex={0}
+            onKeyDown={onKeyDown}
+            placeholder="Send a message."
+            className="min-h-[60px] w-full resize-none bg-white px-2 focus-within:outline-none sm:text-sm"
+            autoFocus
+            spellCheck={false}
+            autoComplete="off"
+            autoCorrect="off"
+            name="message"
+            rows={1}
+            value={input}
+            onChange={e => setInput(e.target.value)}
+          />
+          <div className="">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={input === ''}
+                  className="flex justify-center items-center rounded-3xl"
+                >
+                  <IconArrowUp />
+                </Button>
+              </TooltipTrigger>
+            </Tooltip>
+          </div>
+        </div>
+
+        <div className="flex justify-between">
+          <FileUploader
+            onFileUpload={handleUploadFile}
+            onFileError={() => console.log('An error has occurred')}
+          />
+          <small>
+            Use{' '}
+            <span className="text-xs rounded-sm bg-gray-100 p-1">
+              shift + return
+            </span>{' '}
+            for new line
+          </small>
         </div>
       </div>
     </form>
