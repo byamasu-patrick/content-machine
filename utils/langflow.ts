@@ -1,4 +1,4 @@
-import EventSource from 'eventsource'
+// import EventSource from 'eventsource'
 interface Input {
   input_value: string
 }
@@ -121,12 +121,13 @@ export class LangflowClient {
     })
   }
 
-  handleStream(
+  async handleStream(
     streamUrl: string,
     onUpdate: (data: StreamData) => void,
     onClose: (message: string) => void,
     onError: (event: Event) => void
-  ): EventSource {
+  ) {
+    const EventSource = (await import('eventsource')).default
     const eventSource = new EventSource(streamUrl)
 
     eventSource.onmessage = event => {
