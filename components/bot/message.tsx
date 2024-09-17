@@ -86,21 +86,10 @@ export function BotMessage({
   )
 }
 
-export function BotCard({
-  children,
-  showAvatar = true
-}: {
-  children: React.ReactNode
-  showAvatar?: boolean
-}) {
+export function BotCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="group relative flex items-start md:-ml-12">
-      <div
-        className={cn(
-          'flex size-[24px] shrink-0 select-none items-center justify-center',
-          !showAvatar && 'invisible'
-        )}
-      >
+    <div className={cn('group relative flex items-start md:-ml-12')}>
+      <div className="flex size-[30px] shrink-0 select-none items-center justify-center p-1 rounded-md border">
         <IconBot />
       </div>
       <div className="ml-4 flex-1 pl-2">{children}</div>
@@ -123,10 +112,10 @@ export function SystemMessage({ children }: { children: React.ReactNode }) {
 export function SpinnerMessage() {
   return (
     <div className="group relative flex items-start md:-ml-12">
-      <div className="flex size-[24px] shrink-0 select-none items-center justify-center rounded-md border bg-primary text-primary-foreground">
+      <div className="flex size-[30px] shrink-0 select-none items-center p-1 justify-center rounded-md border">
         <IconBot />
       </div>
-      <div className="ml-4 h-[24px] flex flex-row items-center flex-1 space-y-2 overflow-hidden px-1">
+      <div className="ml-4 h-[26px] flex flex-row items-center flex-1 space-y-2 overflow-hidden px-1">
         {spinner}
       </div>
     </div>

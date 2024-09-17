@@ -9,7 +9,7 @@ import { ChatShareDialog } from '@/components/chat-share-dialog'
 import { useAIState, useActions, useUIState } from 'ai/rsc'
 import type { AI } from '@/lib/chat/actions'
 import { nanoid } from 'nanoid'
-import { UserMessage } from './bot/message'
+import { SpinnerMessage, UserMessage } from './bot/message'
 
 export interface ChatPanelProps {
   id?: string
@@ -71,22 +71,34 @@ export function ChatPanel({
                   index > 1 && 'hidden md:block'
                 }`}
                 onClick={async () => {
+                  const botMessageId = nanoid()
                   setMessages(currentMessages => [
                     ...currentMessages,
                     {
                       id: nanoid(),
                       display: <UserMessage>{example.message}</UserMessage>
+                    },
+                    {
+                      id: botMessageId,
+                      display: <SpinnerMessage />
                     }
                   ])
 
                   const responseMessage = await submitUserMessage(
-                    example.message
+                    example.message,
+                    botMessageId
                   )
+                  
+                  setMessages(currentMessages => {
+                    const updatedMessages = [...currentMessages]
+                    const index = updatedMessages.findIndex(
+                      message => message.id === botMessageId
+                    )
 
-                  setMessages(currentMessages => [
-                    ...currentMessages,
-                    responseMessage
-                  ])
+                    updatedMessages[index] = responseMessage
+
+                    return updatedMessages
+                  })
                 }}
               >
                 <div className="text-sm font-semibold">{example.heading}</div>
@@ -131,10 +143,10 @@ export function ChatPanel({
         </div>
       </div>
 
-        <ButtonScrollToBottom
-          isAtBottom={isAtBottom}
-          scrollToBottom={scrollToBottom}
-        />
+      <ButtonScrollToBottom
+        isAtBottom={isAtBottom}
+        scrollToBottom={scrollToBottom}
+      />
     </div>
   )
 }

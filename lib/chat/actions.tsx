@@ -4,19 +4,20 @@ import {
   createAI,
   getMutableAIState,
   getAIState,
-  createStreamableValue
+  createStreamableValue,
+  
 } from 'ai/rsc'
 import { BotMessage } from '@/components/bot'
 
 import { nanoid } from '@/lib/utils'
 import { saveChat } from '@/app/actions'
-import { UserMessage } from '@/components/bot/message'
+import { SpinnerMessage, UserMessage } from '@/components/bot/message'
 import { Chat, Message } from '@/lib/types'
 import { auth } from '@/auth'
 import { chatLangflow, StreamData } from '@/utils/langflow'
 import { Session } from '@/lib/types'
 
-async function submitUserMessage(content: string) {
+async function submitUserMessage(content: string, aiStateId: string) {
   'use server'
 
   const session = (await auth()) as Session
@@ -40,6 +41,8 @@ async function submitUserMessage(content: string) {
 
   const updateMessageStream = (data: StreamData) => {
     if (textStream) {
+      console.log(textStream)
+
       textStream.update(data.chunk)
     }
   }
@@ -56,7 +59,7 @@ async function submitUserMessage(content: string) {
       messages: [
         ...aiState.get().messages,
         {
-          id: nanoid(),
+          id: aiStateId,
           role: 'assistant',
           content: message
         }
@@ -69,7 +72,6 @@ async function submitUserMessage(content: string) {
   }
 
   const stream = false
-
   const chatId = aiState.get().chatId
 
   const result = await chatLangflow(

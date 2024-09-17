@@ -25,6 +25,7 @@
     "ai": "^3.3.17",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "event-source-polyfill": "^1.0.31",
     "eventsource": "^2.0.2",
     "eventsource-polyfill": "^0.9.6",
     "framer-motion": "^11.3.30",

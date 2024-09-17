@@ -1,7 +1,10 @@
-let EventSourcePolyfill: any
+let EventSourceImplementation: any
 
 if (typeof window !== 'undefined') {
-  EventSourcePolyfill = require('eventsource-polyfill').EventSourcePolyfill
+  EventSourceImplementation =
+    require('event-source-polyfill').EventSourcePolyfill
+} else {
+  EventSourceImplementation = require('eventsource')
 }
 
 interface Input {
@@ -92,6 +95,9 @@ class LangflowClient {
 
       const responseMessage = await response.json()
       if (!response.ok) {
+        console.error(
+          `${response.status} ${response.statusText} - ${JSON.stringify(responseMessage)}`
+        )
         throw new Error(
           `${response.status} ${response.statusText} - ${JSON.stringify(responseMessage)}`
         )
@@ -112,18 +118,22 @@ class LangflowClient {
     stream: boolean = false
   ): Promise<FlowResponse | StreamFlowResponse> {
     const endpoint =
-      process.env.NODE_ENV == 'development'
+      process.env.NODE_ENV === 'development'
         ? `/api/v1/run/${flowId}?stream=${stream}`
         : `/lf/${langflowId}/api/v1/run/${flowId}?stream=${stream}`
 
-    console.log(`ENV: ${process.env.NODE_ENV} - API Endpoint: ${endpoint}`)
-
-    return this.post(endpoint, {
-      input_value: inputValue,
-      output_type: 'chat',
-      input_type: 'chat',
-      tweaks
-    })
+    return this.post(
+      endpoint,
+      {
+        input_value: inputValue,
+        output_type: 'chat',
+        input_type: 'chat',
+        tweaks
+      },
+      {
+        'Content-Type': 'application/json'
+      }
+    )
   }
 
   async handleStream(
@@ -132,7 +142,7 @@ class LangflowClient {
     onClose: (message: string) => void,
     onError: (event: Event) => void
   ) {
-    const eventSource = new EventSourcePolyfill(streamUrl)
+    const eventSource = new EventSourceImplementation(streamUrl)
 
     eventSource.onmessage = (event: { data: string }) => {
       const data: StreamData = JSON.parse(event.data)
@@ -140,7 +150,7 @@ class LangflowClient {
       onUpdate(data)
     }
 
-    eventSource.onerror = (event: Event) => {
+    eventSource.onerror = (event: any) => {
       console.error('Stream Error:', event)
       onError(event)
       eventSource.close()
@@ -181,7 +191,9 @@ class LangflowClient {
           const streamUrl =
             streamedResponse.outputs[0]?.outputs[0]?.artifacts?.stream_url
 
-          console.log(`Streaming from: ${streamUrl}`)
+          console.log(
+            `Streaming from: ${streamedResponse?.outputs?.[0]?.outputs?.[0]?.outputs.message?.text}`
+          )
           this.handleStream(streamUrl, onUpdate, onClose, onError)
         }
       }
@@ -219,9 +231,7 @@ export async function chatLangflow(
     },
     'TextInput-OL4O3': {
       input_value: senderName
-    },
-
-    'Memory-d2JGj': {}
+    }
   }
 
   try {
@@ -242,8 +252,6 @@ export async function chatLangflow(
       const output = firstComponentOutputs.results.message.text
 
       if (output) {
-        console.log('Final Output:', output)
-
         return output
       }
     }

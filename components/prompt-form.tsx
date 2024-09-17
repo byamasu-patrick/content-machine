@@ -5,7 +5,7 @@ import Textarea from 'react-textarea-autosize'
 
 import { useActions, useUIState } from 'ai/rsc'
 
-import { UserMessage } from './bot/message'
+import { BotCard, BotMessage, SpinnerMessage, UserMessage } from './bot/message'
 import { type AI } from '@/lib/chat/actions'
 import { Button } from '@/components/ui/button'
 import { IconArrowUp } from '@/components/ui/icons'
@@ -60,17 +60,32 @@ export function PromptForm({
         setInput('')
         if (!value) return
 
+        const botMessageId = nanoid()
         // Optimistically add user message UI
         setMessages(currentMessages => [
           ...currentMessages,
           {
             id: nanoid(),
             display: <UserMessage>{value}</UserMessage>
+          },
+          {
+            id: botMessageId,
+            display: <SpinnerMessage />
           }
         ])
         // Submit and get response message
-        const responseMessage = await submitUserMessage(value)
-        setMessages(currentMessages => [...currentMessages, responseMessage])
+        const responseMessage = await submitUserMessage(value, botMessageId)
+        // setMessages(currentMessages => [...currentMessages, responseMessage])
+        setMessages(currentMessages => {
+          const updatedMessages = [...currentMessages]
+          const index = updatedMessages.findIndex(
+            message => message.id === botMessageId
+          )
+
+          updatedMessages[index] = responseMessage
+
+          return updatedMessages
+        })
       }}
     >
       <div className="bg-white sm:rounded-md mb-4 p-4 sm:border">
