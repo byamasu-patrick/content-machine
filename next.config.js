@@ -9,5 +9,15 @@ module.exports = {
         pathname: '**'
       }
     ]
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        http: false,
+        https: false
+      }
+    }
+    return config
   }
 }
