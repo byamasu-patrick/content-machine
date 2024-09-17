@@ -70,10 +70,12 @@ async function submitUserMessage(content: string) {
 
   const stream = false
 
+  const chatId = aiState.get().chatId
+
   const result = await chatLangflow(
     content,
     session?.user.email as string,
-    session?.user?.id as string,
+    chatId,
     stream,
     updateMessageStream,
     closeMessageStream,
