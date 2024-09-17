@@ -102,13 +102,17 @@ export class LangflowClient {
 
   async initiateSession(
     flowId: string,
+    langflowId: string,
     inputValue: string,
     tweaks: {},
     stream: boolean = false
   ): Promise<FlowResponse | StreamFlowResponse> {
-    const endpoint = `/api/v1/run/${flowId}?stream=${stream}`
+    const endpoint =
+      process.env.NODE_ENV == 'development'
+        ? `/api/v1/run/${flowId}?stream=${stream}`
+        : `/lf/${langflowId}/api/v1/run/${flowId}?stream=${stream}`
 
-    // tweaks['ChatInput-AzzZf']['input_value'] = inputValue
+    console.log(`ENV: ${process.env.NODE_ENV} - API Endpoint: ${endpoint}`)
 
     return this.post(endpoint, {
       input_value: inputValue,
@@ -148,6 +152,7 @@ export class LangflowClient {
 
   async runFlow(
     flowIdOrName: string,
+    langflowId: string,
     inputValue: string,
     tweaks: {},
     stream: boolean = false,
@@ -158,6 +163,7 @@ export class LangflowClient {
     try {
       const initResponse = await this.initiateSession(
         flowIdOrName,
+        langflowId,
         inputValue,
         tweaks,
         stream
@@ -191,10 +197,11 @@ export async function chatLangflow(
   onClose: (message: string) => void,
   onError: (error: Event | any) => void
 ) {
-  const flowIdOrName = process.env.NEXT_PUBLIC_LANGFLOW_ID as string
+  const flowIdOrName = process.env.LANGFLOW_FLOW_ID_OR_NAME as string
+  const langflowId = process.env.LANGFLOW_ID as string
   const langflowClient = new LangflowClient(
-    process.env.NEXT_PUBLIC_LANGFLOW_BACKEND as string,
-    process.env.NEXT_PUBLIC_LANGFLOW_API_KEY as string
+    process.env.LANGFLOW_BACKEND as string,
+    process.env.LANGFLOW_API_KEY as string
   )
 
   const tweaks = {
@@ -216,6 +223,7 @@ export async function chatLangflow(
   try {
     const response = (await langflowClient.runFlow(
       flowIdOrName,
+      langflowId,
       inputValue,
       tweaks,
       stream,
