@@ -74,13 +74,11 @@ export function PromptForm({
           }
         ])
         // Submit and get response message
-        const responseMessage = await submitUserMessage(value, botMessageId)
+        const responseMessage = await submitUserMessage(value)
         // setMessages(currentMessages => [...currentMessages, responseMessage])
         setMessages(currentMessages => {
           const updatedMessages = [...currentMessages]
-          const index = updatedMessages.findIndex(
-            message => message.id === botMessageId
-          )
+          const index = updatedMessages.length -1 
 
           updatedMessages[index] = responseMessage
 

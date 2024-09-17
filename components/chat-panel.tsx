@@ -91,9 +91,7 @@ export function ChatPanel({
                   
                   setMessages(currentMessages => {
                     const updatedMessages = [...currentMessages]
-                    const index = updatedMessages.findIndex(
-                      message => message.id === botMessageId
-                    )
+                    const index = updatedMessages.length -1 
 
                     updatedMessages[index] = responseMessage
 

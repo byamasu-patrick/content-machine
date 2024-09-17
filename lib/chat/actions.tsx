@@ -11,13 +11,13 @@ import { BotMessage } from '@/components/bot'
 
 import { nanoid } from '@/lib/utils'
 import { saveChat } from '@/app/actions'
-import { SpinnerMessage, UserMessage } from '@/components/bot/message'
+import { UserMessage } from '@/components/bot/message'
 import { Chat, Message } from '@/lib/types'
 import { auth } from '@/auth'
 import { chatLangflow, StreamData } from '@/utils/langflow'
 import { Session } from '@/lib/types'
 
-async function submitUserMessage(content: string, aiStateId: string) {
+async function submitUserMessage(content: string) {
   'use server'
 
   const session = (await auth()) as Session
@@ -59,7 +59,7 @@ async function submitUserMessage(content: string, aiStateId: string) {
       messages: [
         ...aiState.get().messages,
         {
-          id: aiStateId,
+          id: nanoid(),
           role: 'assistant',
           content: message
         }
