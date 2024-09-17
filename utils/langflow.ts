@@ -75,8 +75,7 @@ export class LangflowClient {
   ): Promise<any> {
     let updatedHeaders = {}
     if (this.apiKey) {
-      updatedHeaders = { ...headers }
-      // , Authorization: `Bearer ${this.apiKey}` }
+      updatedHeaders = { ...headers, Authorization: `Bearer ${this.apiKey}` }
     } else {
       updatedHeaders = headers
     }
