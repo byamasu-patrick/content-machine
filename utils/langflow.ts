@@ -222,7 +222,7 @@ export async function chatLangflow(
     process.env.LANGFLOW_API_KEY as string
   )
 
-  const tweaks = {
+  const dev = {
     'ChatInput-AzzZf': {
       sender_name: senderName,
       session_id: sessionId,
@@ -235,6 +235,22 @@ export async function chatLangflow(
       input_value: senderName
     }
   }
+
+  const prod = {
+    'ChatInput-bLDwq': {
+      sender_name: senderName,
+      session_id: sessionId,
+      should_store_message: true
+    },
+    'TextInput-zUyJ9': {
+      input_value: sessionId
+    },
+    'TextInput-MAFrT': {
+      input_value: senderName
+    }
+  }
+
+  const tweaks = process.env.NODE_ENV === 'development' ? dev : prod
 
   try {
     const response = (await langflowClient.runFlow(
