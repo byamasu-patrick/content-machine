@@ -3,9 +3,11 @@ let EventSourceImplementation: any
 if (typeof window !== 'undefined') {
   EventSourceImplementation =
     require('event-source-polyfill').EventSourcePolyfill
-} else {
-  EventSourceImplementation = require('eventsource')
 }
+
+// else {
+//   EventSourceImplementation = require('eventsource')
+// }
 
 interface Input {
   input_value: string
