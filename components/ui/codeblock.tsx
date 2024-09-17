@@ -68,23 +68,25 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
       3,
       true
     )}${fileExtension}`
-    const fileName = window.prompt('Enter file name' || '', suggestedFileName)
+    if (typeof window !== 'undefined') {
+      const fileName = window.prompt('Enter file name', suggestedFileName || '')
 
-    if (!fileName) {
-      // User pressed cancel on prompt.
-      return
+      if (!fileName) {
+        // User pressed cancel on prompt.
+        return
+      }
+
+      const blob = new Blob([value], { type: 'text/plain' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.download = fileName
+      link.href = url
+      link.style.display = 'none'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
     }
-
-    const blob = new Blob([value], { type: 'text/plain' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.download = fileName
-    link.href = url
-    link.style.display = 'none'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
   }
 
   const onCopy = () => {

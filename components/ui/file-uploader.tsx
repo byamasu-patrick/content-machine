@@ -59,20 +59,7 @@ export default function FileUploader({
   }
 
   const handleUpload = async (file: File) => {
-    const onFileUploadError = onFileError || window.alert
-    const fileExtension = file.name.split('.').pop() || ''
-    const extensionFileError = checkExtension(fileExtension)
-    if (extensionFileError) {
-      return onFileUploadError(extensionFileError)
-    }
-
-    if (isFileSizeExceeded(file)) {
-      return onFileUploadError(
-        `File size exceeded. Limit is ${fileSizeLimit / 1024 / 1024} MB`
-      )
-    }
-
-    await onFileUpload(file)
+    console.log(file)
   }
 
   return (

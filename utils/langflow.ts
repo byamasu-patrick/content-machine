@@ -1,4 +1,4 @@
-// import EventSource from 'eventsource'
+import { EventSourcePolyfill } from 'eventsource-polyfill'
 interface Input {
   input_value: string
 }
@@ -56,7 +56,7 @@ export interface StreamData {
   chunk: string
 }
 
-export class LangflowClient {
+class LangflowClient {
   baseURL: string
   apiKey: string
 
@@ -127,16 +127,15 @@ export class LangflowClient {
     onClose: (message: string) => void,
     onError: (event: Event) => void
   ) {
-    const EventSource = (await import('eventsource')).default
-    const eventSource = new EventSource(streamUrl)
+    const eventSource = new EventSourcePolyfill(streamUrl)
 
-    eventSource.onmessage = event => {
+    eventSource.onmessage = (event: { data: string }) => {
       const data: StreamData = JSON.parse(event.data)
       console.log('Streamed data: ', data)
       onUpdate(data)
     }
 
-    eventSource.onerror = event => {
+    eventSource.onerror = (event: Event) => {
       console.error('Stream Error:', event)
       onError(event)
       eventSource.close()
@@ -247,3 +246,5 @@ export async function chatLangflow(
     console.error('Main Error:', error.message)
   }
 }
+
+export default chatLangflow

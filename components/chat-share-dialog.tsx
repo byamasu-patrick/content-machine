@@ -38,11 +38,13 @@ export function ChatShareDialog({
         return toast.error('Could not copy share link to clipboard')
       }
 
-      const url = new URL(window.location.href)
-      url.pathname = chat.sharePath
-      copyToClipboard(url.toString())
-      onCopy()
-      toast.success('Share link copied to clipboard')
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href)
+        url.pathname = chat.sharePath
+        copyToClipboard(url.toString())
+        onCopy()
+        toast.success('Share link copied to clipboard')
+      }
     },
     [copyToClipboard, onCopy]
   )

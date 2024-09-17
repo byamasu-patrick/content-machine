@@ -52,7 +52,7 @@ export function PromptForm({
         e.preventDefault()
 
         // Blur focus on mobile
-        if (window.innerWidth < 600) {
+        if (typeof window !== 'undefined' && window.innerWidth < 600) {
           e.target['message']?.blur()
         }
 
