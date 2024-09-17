@@ -1,4 +1,9 @@
-import { EventSourcePolyfill } from 'eventsource-polyfill'
+let EventSourcePolyfill: any
+
+if (typeof window !== 'undefined') {
+  EventSourcePolyfill = require('eventsource-polyfill').EventSourcePolyfill
+}
+
 interface Input {
   input_value: string
 }

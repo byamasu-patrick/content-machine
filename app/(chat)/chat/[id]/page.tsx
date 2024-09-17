@@ -1,17 +1,24 @@
+'use server'
+import dynamic from 'next/dynamic'
 import { type Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 
 import { auth } from '@/auth'
 import { getChat, getMissingKeys } from '@/app/actions'
-import { Chat } from '@/components/chat'
+// import { Chat } from '@/components/chat'
 import { AI } from '@/lib/chat/actions'
 import { Session } from '@/lib/types'
+import { Suspense } from 'react'
 
 export interface ChatPageProps {
   params: {
     id: string
   }
 }
+
+const Chat = dynamic(() => import('@/components/chat'), {
+  ssr: false
+})
 
 export async function generateMetadata({
   params
@@ -53,12 +60,14 @@ export default async function ChatPage({ params }: ChatPageProps) {
 
     return (
       <AI initialAIState={{ chatId: chat.id, messages: chat.messages }}>
-        <Chat
-          id={chat.id}
-          session={session}
-          initialMessages={chat.messages}
-          missingKeys={missingKeys}
-        />
+        <Suspense fallback={<div className="flex-1 overflow-auto" />}>
+          <Chat
+            id={chat.id}
+            session={session}
+            initialMessages={chat.messages}
+            missingKeys={missingKeys}
+          />
+        </Suspense>
       </AI>
     )
   }
