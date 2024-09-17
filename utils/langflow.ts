@@ -1,4 +1,7 @@
-import EventSource from 'eventsource'
+let EventSource: any
+if (typeof window === 'undefined') {
+  EventSource = require('eventsource')
+}
 interface Input {
   input_value: string
 }
@@ -130,13 +133,13 @@ export class LangflowClient {
   ): EventSource {
     const eventSource = new EventSource(streamUrl)
 
-    eventSource.onmessage = event => {
+    eventSource.onmessage = (event: { data: string }) => {
       const data: StreamData = JSON.parse(event.data)
       console.log('Streamed data: ', data)
       onUpdate(data)
     }
 
-    eventSource.onerror = event => {
+    eventSource.onerror = (event: Event) => {
       console.error('Stream Error:', event)
       onError(event)
       eventSource.close()
