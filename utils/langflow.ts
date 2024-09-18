@@ -230,9 +230,6 @@ export async function chatLangflow(
     },
     'TextInput-36cHK': {
       input_value: sessionId
-    },
-    'TextInput-OL4O3': {
-      input_value: senderName
     }
   }
 
@@ -244,13 +241,12 @@ export async function chatLangflow(
     },
     'TextInput-zUyJ9': {
       input_value: sessionId
-    },
-    'TextInput-MAFrT': {
-      input_value: senderName
     }
   }
 
   const tweaks = process.env.NODE_ENV === 'development' ? dev : prod
+
+  console.log(tweaks)
 
   try {
     const response = (await langflowClient.runFlow(

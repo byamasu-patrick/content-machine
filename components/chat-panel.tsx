@@ -10,6 +10,7 @@ import { useAIState, useActions, useUIState } from 'ai/rsc'
 import type { AI, UIState } from '@/lib/chat/actions'
 import { nanoid } from 'nanoid'
 import { SpinnerMessage, UserMessage } from './bot/message'
+import { useRouter } from 'next/navigation'
 
 export interface ChatPanelProps {
   id?: string
@@ -28,7 +29,8 @@ export function ChatPanel({
   isAtBottom,
   scrollToBottom
 }: ChatPanelProps) {
-  const [aiState] = useAIState()
+  const router = useRouter()
+  const [aiState] = useAIState<typeof AI>()
   const [messages, setMessages] = useUIState<typeof AI>()
   const { submitUserMessage } = useActions()
   const [shareDialogOpen, setShareDialogOpen] = React.useState(false)
@@ -91,14 +93,20 @@ export function ChatPanel({
 
                   const updateMessages = (currentMessages: UIState) => {
                     const updatedMessages = [...currentMessages]
-                    const index = updatedMessages.length -1 
+                    const index = updatedMessages.length - 1
 
                     updatedMessages[index] = responseMessage
 
                     return updatedMessages
                   }
-                  
-                  setMessages(currentMessages => [...updateMessages(currentMessages)])
+
+                  setMessages(currentMessages => [
+                    ...updateMessages(currentMessages)
+                  ])
+
+                  if (aiState.chatId) {
+                    router.push(`/chat/${aiState.chatId}`)
+                  }
                 }}
               >
                 <div className="text-sm font-semibold">{example.heading}</div>

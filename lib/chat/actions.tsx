@@ -4,8 +4,7 @@ import {
   createAI,
   getMutableAIState,
   getAIState,
-  createStreamableValue,
-  
+  createStreamableValue
 } from 'ai/rsc'
 import { BotMessage } from '@/components/bot'
 
@@ -84,22 +83,22 @@ async function submitUserMessage(content: string) {
     handleError
   )
 
-  if (!textStream && !stream) {
-    textStream = createStreamableValue(result)
-    textNode = <BotMessage content={result as string} />
-    textStream.done()
-    aiState.done({
-      ...aiState.get(),
-      messages: [
-        ...aiState.get().messages,
-        {
-          id: nanoid(),
-          role: 'assistant',
-          content: result as string
-        }
-      ]
-    })
-  }
+  // if (!textStream && !stream) {
+  textStream = createStreamableValue(result)
+  textNode = <BotMessage content={result as string} />
+  textStream.done()
+  aiState.done({
+    ...aiState.get(),
+    messages: [
+      ...aiState.get().messages,
+      {
+        id: nanoid(),
+        role: 'assistant',
+        content: result as string
+      }
+    ]
+  })
+  // }
 
   return {
     id: nanoid(),

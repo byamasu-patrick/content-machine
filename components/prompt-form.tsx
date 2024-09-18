@@ -3,9 +3,9 @@
 import * as React from 'react'
 import Textarea from 'react-textarea-autosize'
 
-import { useActions, useUIState } from 'ai/rsc'
+import { useActions, useAIState, useUIState } from 'ai/rsc'
 
-import { BotCard, BotMessage, SpinnerMessage, UserMessage } from './bot/message'
+import { SpinnerMessage, UserMessage } from './bot/message'
 import { UIState, type AI } from '@/lib/chat/actions'
 import { Button } from '@/components/ui/button'
 import { IconArrowUp } from '@/components/ui/icons'
@@ -13,6 +13,7 @@ import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip'
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { nanoid } from 'nanoid'
 import FileUploader from './ui/file-uploader'
+import { useRouter } from 'next/navigation'
 
 export function PromptForm({
   input,
@@ -21,8 +22,10 @@ export function PromptForm({
   input: string
   setInput: (value: string) => void
 }) {
+  const router = useRouter()
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
+  const [aiState] = useAIState<typeof AI>()
   const { submitUserMessage } = useActions()
   const [_, setMessages] = useUIState<typeof AI>()
 
@@ -74,7 +77,6 @@ export function PromptForm({
           }
         ])
 
-        setMessages(currentMessages => [...updateMessages(currentMessages)])
         // Submit and get response message
         const responseMessage = await submitUserMessage(value)
 
@@ -88,6 +90,10 @@ export function PromptForm({
         }
 
         setMessages(currentMessages => [...updateMessages(currentMessages)])
+
+        if (aiState.chatId) {
+          router.push(`/chat/${aiState.chatId}`)
+        }
       }}
     >
       <div className="bg-white sm:rounded-md mb-4 p-4 sm:border">
