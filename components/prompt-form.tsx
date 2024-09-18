@@ -6,7 +6,7 @@ import Textarea from 'react-textarea-autosize'
 import { useActions, useUIState } from 'ai/rsc'
 
 import { BotCard, BotMessage, SpinnerMessage, UserMessage } from './bot/message'
-import { type AI } from '@/lib/chat/actions'
+import { UIState, type AI } from '@/lib/chat/actions'
 import { Button } from '@/components/ui/button'
 import { IconArrowUp } from '@/components/ui/icons'
 import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip'
@@ -73,17 +73,21 @@ export function PromptForm({
             display: <SpinnerMessage />
           }
         ])
+
+        setMessages(currentMessages => [...updateMessages(currentMessages)])
         // Submit and get response message
         const responseMessage = await submitUserMessage(value)
-        // setMessages(currentMessages => [...currentMessages, responseMessage])
-        setMessages(currentMessages => {
+
+        const updateMessages = (currentMessages: UIState) => {
           const updatedMessages = [...currentMessages]
-          const index = updatedMessages.length -1 
+          const index = updatedMessages.length - 1
 
           updatedMessages[index] = responseMessage
 
           return updatedMessages
-        })
+        }
+
+        setMessages(currentMessages => [...updateMessages(currentMessages)])
       }}
     >
       <div className="bg-white sm:rounded-md mb-4 p-4 sm:border">

@@ -7,7 +7,7 @@ import { ButtonScrollToBottom } from '@/components/button-scroll-to-bottom'
 import { IconShare } from '@/components/ui/icons'
 import { ChatShareDialog } from '@/components/chat-share-dialog'
 import { useAIState, useActions, useUIState } from 'ai/rsc'
-import type { AI } from '@/lib/chat/actions'
+import type { AI, UIState } from '@/lib/chat/actions'
 import { nanoid } from 'nanoid'
 import { SpinnerMessage, UserMessage } from './bot/message'
 
@@ -88,15 +88,17 @@ export function ChatPanel({
                     example.message,
                     botMessageId
                   )
-                  
-                  setMessages(currentMessages => {
+
+                  const updateMessages = (currentMessages: UIState) => {
                     const updatedMessages = [...currentMessages]
                     const index = updatedMessages.length -1 
 
                     updatedMessages[index] = responseMessage
 
                     return updatedMessages
-                  })
+                  }
+                  
+                  setMessages(currentMessages => [...updateMessages(currentMessages)])
                 }}
               >
                 <div className="text-sm font-semibold">{example.heading}</div>
